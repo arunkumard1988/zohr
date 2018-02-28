@@ -1,43 +1,98 @@
 import React from 'react';
+//import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PanelHeading from '../panel_heading';
-import CustomizedGrid from '../../components/configuration/customized_grid';
+//import CustomizedGrid from '../../components/configuration/customized_grid';
 import { userActions } from '../../_actions';
+const ReactDataGrid = require('react-data-grid');
+
 class CustomerMaster extends React.Component {
-  constructor(props) {
-    super(props);	
+	
+  constructor(props,context) {
+    super(props,context);	
         this.state = {
             companyName: '',
             contactNo: '',
             pinCode: '',
+            showComponent: true,
             submitted: false
         };
+	
    // this.handleButtonClick = this.handleButtonClick.bind(this);
    	this.handleChange = this.handleChange.bind(this);
 	this.handleSubmit = this.handleSubmit.bind(this);
 
   }
- 
+  
+   createRows = () => {
+    let rows = [];
+    for (let i = 1; i < 41; i++) {
+      rows.push({
+        id: i,
+        customer_name: 'CustomerName ' + i,
+        mobile_no: i * 1000
+      });
+    }
+
+    this._rows = rows;
+  };
+  
+  rowGetter = (i) => {
+    return this._rows[i];
+  };
+  
+ componentDidMount() {
+	const { dispatch} = this.props
+	dispatch(userActions.getAll());
+} 
+	 
   handleChange(e) {
         const { name, value } = e.target;
         this.setState({ [name]: value });
 	} 
 	handleSubmit(e) {
 		e.preventDefault(); 	
-		this.setState({ submitted: true });	       
-      
+		this.setState({ submitted: true });	     
 		const { companyName } = this.state;
 		const { contactNo } = this.state;
 		const { pinCode } = this.state;
 		const { dispatch } = this.props;
 		 
 		if ((companyName) && (contactNo) && (pinCode)) {
-			 this.setState({ showComponent: true });			 
-			 this.props.dispatch(userActions.login(companyName));
+			// this.setState({ showComponent: true });			 
+			 //dispatch(customerActions.register(companyName));
+			dispatch(userActions.register(companyName));
 		}
 	}  
     render() {
-		 const { companyName,contactNo,pinCode,submitted } = this.state;
+		// const { dispatch,users } = this.props; 	
+		  const { users } = this.props; 
+		  const { companyName,contactNo,pinCode,submitted } = this.state;
+		  let count=1;
+			// Grid options for customer details
+			this._columns = [
+			{ key: 'id', name: 'ID' },
+			{ key: 'customer_name', name: 'Customer Name' },
+			{ key: 'mobile_no', name: 'Mobile No' } ];		
+			
+			let rows = [];		 
+			{users.items &&
+			<s>						  
+			{users.items.map((user, index) =>
+			rows.push({
+			id: count++,
+			customer_name: user.username,
+			mobile_no: user.mobileno 
+			}) 
+			)
+			
+			}
+			</s>
+			
+			} 							 
+			this._rows = rows;			
+			// Grid options for customer details
+
         return (
             <div className="flex-grid">
                 <div className="panel panel--left flex-4">
@@ -136,12 +191,20 @@ class CustomerMaster extends React.Component {
                     </form>                        
                 </div>
                 <div className="panel panel--right flex-8">
-                    <div className="panel__heading">
-                        
-						{this.state.showComponent ?
-								   <CustomizedGrid /> :
+                    <div className="panel__heading"><h2>Customer Listing</h2>
+					{this.state.showComponent ?
+							<ReactDataGrid
+							columns={this._columns}
+							rowGetter={this.rowGetter}
+							rowsCount={this._rows.length}
+							minHeight={500}/>:
 								   null
 								}						
+
+								{/*{this.state.showComponent ?
+								   <CustomizedGrid title={users.items} /> :
+								   null
+								}*/}						
 						 
                     </div>
                 </div>
@@ -150,13 +213,33 @@ class CustomerMaster extends React.Component {
     }
 }
 
-function mapStateToProps(state) {    
-    return {
-       // loggingIn
+function mapStateToProps(state) {
+    const { users } = state;    
+    return {        
+        users
     };
 }
 
-const connectedCustomerMaster = connect(mapStateToProps)(CustomerMaster);
+
+/* function mapStateToProps(users,dispatch) {
+	//const { users } = this.state;
+  return { actions: bindActionCreators(userActions.getAll , dispatch) };
+}
+ */
+/*function mapStateToProps(state) {  
+    const { users} = state;
+    
+    return {        
+        users
+    };
+	 const { companyName} = dispatch;  
+    return {
+		actions:bindActionCreators(customerActions.getAll,dispatch),companyName
+       // loggingIn
+    }; 
+}*/
+export default connect(mapStateToProps)(CustomerMaster);
+//const connectedCustomerMaster = connect(mapStateToProps)(CustomerMaster);
 //export { connectedCustomerMaster as CustomerMaster }; 
-export default CustomerMaster;
+//export default CustomerMaster;
 //export default CustomerMaster;
