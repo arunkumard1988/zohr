@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {BrowserRouter as Router,Route,Switch,} from 'react-router-dom';
+import {Router,Route,Switch,} from 'react-router-dom';
 import Nav from "./components/nav";
 import CompanyDetails from './components/configuration/company_deatils';
 import CustomerMaster from './components/configuration/CustomerMaster';
@@ -9,11 +9,13 @@ import SmsFormat from './components/configuration/sms_format';
 import NoMatch from './components/noMatch';
 import DashBaord from './components/dashboard/dashboard';
 import './css/main.css';
+import { history } from './_helpers';
 
 class App extends Component {
+
   render() {
     return (
-      <Router>
+      <Router history={history}>
         <div className="app-container">
           <Nav />
           <header></header>

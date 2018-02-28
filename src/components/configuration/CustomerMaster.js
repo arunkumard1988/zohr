@@ -15,7 +15,7 @@ class CustomerMaster extends React.Component {
             contactNo: '',
             pinCode: '',
             showComponent: true,
-            submitted: false
+            //submitted: false
         };
 	
    // this.handleButtonClick = this.handleButtonClick.bind(this);
