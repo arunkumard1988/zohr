@@ -2,7 +2,7 @@ import React from 'react';
 //import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PanelHeading from '../panel_heading';
-//import CustomizedGrid from '../../components/configuration/customized_grid';
+import CustomizedGrid from '../../components/configuration/customized_grid';
 import { userActions } from '../../_actions';
 const ReactDataGrid = require('react-data-grid');
 
@@ -15,7 +15,7 @@ class CustomerMaster extends React.Component {
             contactNo: '',
             pinCode: '',
             showComponent: true,
-            //submitted: false
+            submitted: false
         };
 	
    // this.handleButtonClick = this.handleButtonClick.bind(this);
@@ -49,7 +49,16 @@ class CustomerMaster extends React.Component {
   handleChange(e) {
         const { name, value } = e.target;
         this.setState({ [name]: value });
-	} 
+	}
+  cancelCourse = () => { 
+    this.setState({
+		companyName: '',
+		contactNo: '',
+		pinCode: '',
+		submitted: false		
+    });
+  }
+  	
 	handleSubmit(e) {
 		e.preventDefault(); 	
 		this.setState({ submitted: true });	     
@@ -59,10 +68,14 @@ class CustomerMaster extends React.Component {
 		const { dispatch } = this.props;
 		 
 		if ((companyName) && (contactNo) && (pinCode)) {
-			// this.setState({ showComponent: true });			 
+			 this.setState({ showComponent: true });			 
 			 //dispatch(customerActions.register(companyName));
 			dispatch(userActions.register(companyName));
+			e.target.reset();
+		    this.cancelCourse();
+			dispatch(userActions.getAll());
 		}
+		//document.getElementById("create-course-form").reset();
 	}  
     render() {
 		// const { dispatch,users } = this.props; 	
@@ -97,7 +110,7 @@ class CustomerMaster extends React.Component {
             <div className="flex-grid">
                 <div className="panel panel--left flex-4">
                     <PanelHeading headingText="Customer Master"/>                
-                    <form name="form" onSubmit={this.handleSubmit}>			
+                    <form name="form" id="create-course-form" onSubmit={this.handleSubmit}>			
                         <div className="form-row">
                             <div className="form-row__label flex-grid">
                                 <div className="flex-col">
@@ -201,10 +214,10 @@ class CustomerMaster extends React.Component {
 								   null
 								}						
 
-								{/*{this.state.showComponent ?
+								{this.state.showComponent ?
 								   <CustomizedGrid title={users.items} /> :
 								   null
-								}*/}						
+								}						
 						 
                     </div>
                 </div>
