@@ -34,6 +34,19 @@ class CustomizedGrid extends React.Component {
     return  (	
 	<div>
 		<h2>Customer Listing</h2>
+		 
+		{this.props.title &&
+		 <tbody>						  
+				{this.props.title.map((user, index) =>
+					<tr key={user.id}>
+						<td>{user.username}</td>
+						<td>{user.username}</td>			 
+						 
+					</tr>
+				)}
+		  </tbody>
+		}		
+		
 		<ReactDataGrid
         columns={this._columns}
         rowGetter={this.rowGetter}
